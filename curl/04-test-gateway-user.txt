@@ -1,0 +1,47 @@
+==========================================================
+EVIDEN AUTH GATEWAY KATA
+STEP 4 - Gateway USER Scenario
+==========================================================
+
+Replace
+
+<USER_ACCESS_TOKEN>
+
+with the token obtained in
+01-get-tokens.txt
+
+
+----------------------------------------------------------
+Current User
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <USER_ACCESS_TOKEN>" ^
+http://localhost:8081/api/me
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+Members Books
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <USER_ACCESS_TOKEN>" ^
+http://localhost:8081/members/books
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+Admin Books
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <USER_ACCESS_TOKEN>" ^
+http://localhost:8081/admin/books
+
+Expected:
+HTTP 403
+
+Reason:
+USER role cannot access ADMIN resources.

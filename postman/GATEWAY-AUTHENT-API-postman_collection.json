@@ -1,0 +1,492 @@
+{
+  "info": {
+    "_postman_id": "2b9c9a94-7a2c-4fc9-91ec-eviden-gateway",
+    "name": "Eviden Auth Gateway - Full Scenarios",
+    "description": "Postman collection for testing the Eviden Authentication Gateway kata: token generation, public routes, protected routes, 401 and 403 scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "keycloak_base_url",
+      "value": "http://localhost:8180"
+    },
+    {
+      "key": "gateway_base_url",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "realm",
+      "value": "eviden-kata"
+    },
+    {
+      "key": "client_id",
+      "value": "gateway-client"
+    },
+    {
+      "key": "client_secret",
+      "value": "gateway-secret"
+    },
+    {
+      "key": "user_access_token",
+      "value": ""
+    },
+    {
+      "key": "admin_access_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Get USER Access Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password", "type": "text" },
+            { "key": "client_id", "value": "{{client_id}}", "type": "text" },
+            { "key": "client_secret", "value": "{{client_secret}}", "type": "text" },
+            { "key": "username", "value": "user", "type": "text" },
+            { "key": "password", "value": "user", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{keycloak_base_url}}/realms/{{realm}}/protocol/openid-connect/token",
+          "host": ["{{keycloak_base_url}}"],
+          "path": ["realms", "{{realm}}", "protocol", "openid-connect", "token"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('USER token request returns HTTP 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('USER access_token is present', function () {",
+              "    pm.expect(json.access_token).to.be.a('string').and.not.empty;",
+              "});",
+              "",
+              "pm.test('Token type is Bearer', function () {",
+              "    pm.expect(json.token_type).to.eql('Bearer');",
+              "});",
+              "",
+              "pm.collectionVariables.set('user_access_token', json.access_token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Get ADMIN Access Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password", "type": "text" },
+            { "key": "client_id", "value": "{{client_id}}", "type": "text" },
+            { "key": "client_secret", "value": "{{client_secret}}", "type": "text" },
+            { "key": "username", "value": "admin", "type": "text" },
+            { "key": "password", "value": "admin", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{keycloak_base_url}}/realms/{{realm}}/protocol/openid-connect/token",
+          "host": ["{{keycloak_base_url}}"],
+          "path": ["realms", "{{realm}}", "protocol", "openid-connect", "token"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('ADMIN token request returns HTTP 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('ADMIN access_token is present', function () {",
+              "    pm.expect(json.access_token).to.be.a('string').and.not.empty;",
+              "});",
+              "",
+              "pm.test('Token type is Bearer', function () {",
+              "    pm.expect(json.token_type).to.eql('Bearer');",
+              "});",
+              "",
+              "pm.collectionVariables.set('admin_access_token', json.access_token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Public Books - No JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{gateway_base_url}}/public/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["public", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Public books returns HTTP 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is not empty', function () {",
+              "    pm.expect(pm.response.text()).to.not.be.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - /api/me - No JWT - Expected 401",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{gateway_base_url}}/api/me",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["api", "me"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('No JWT returns HTTP 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Error payload contains Unauthorized', function () {",
+              "    pm.expect(json.status).to.eql(401);",
+              "    pm.expect(json.error).to.eql('Unauthorized');",
+              "});",
+              "",
+              "pm.test('Path is /api/me', function () {",
+              "    pm.expect(json.path).to.eql('/api/me');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Members Books - No JWT - Expected 401",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{gateway_base_url}}/members/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["members", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('No JWT returns HTTP 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Error payload is Unauthorized', function () {",
+              "    pm.expect(json.status).to.eql(401);",
+              "    pm.expect(json.error).to.eql('Unauthorized');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Admin Books - No JWT - Expected 401",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{gateway_base_url}}/admin/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["admin", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('No JWT returns HTTP 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Error payload is Unauthorized', function () {",
+              "    pm.expect(json.status).to.eql(401);",
+              "    pm.expect(json.error).to.eql('Unauthorized');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - /api/me - USER JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{user_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/api/me",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["api", "me"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('USER /api/me returns HTTP 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Principal username is user', function () {",
+              "    pm.expect(json.preferredUsername).to.eql('user');",
+              "});",
+              "",
+              "pm.test('USER role is present', function () {",
+              "    pm.expect(json.roles).to.include('ROLE_USER');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Members Books - USER JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{user_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/members/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["members", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('USER can access members books', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is not empty', function () {",
+              "    pm.expect(pm.response.text()).to.not.be.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Admin Books - USER JWT - Expected 403",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{user_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/admin/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["admin", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('USER cannot access admin books', function () {",
+              "    pm.response.to.have.status(403);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Error payload is Forbidden', function () {",
+              "    pm.expect(json.status).to.eql(403);",
+              "    pm.expect(json.error).to.eql('Forbidden');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - /api/me - ADMIN JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/api/me",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["api", "me"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('ADMIN /api/me returns HTTP 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "",
+              "pm.test('Principal username is admin', function () {",
+              "    pm.expect(json.preferredUsername).to.eql('admin');",
+              "});",
+              "",
+              "pm.test('ADMIN role is present', function () {",
+              "    pm.expect(json.roles).to.include('ROLE_ADMIN');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Members Books - ADMIN JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/members/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["members", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('ADMIN can access members books', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is not empty', function () {",
+              "    pm.expect(pm.response.text()).to.not.be.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Admin Books - ADMIN JWT - Expected 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{gateway_base_url}}/admin/books",
+          "host": ["{{gateway_base_url}}"],
+          "path": ["admin", "books"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('ADMIN can access admin books', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is not empty', function () {",
+              "    pm.expect(pm.response.text()).to.not.be.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

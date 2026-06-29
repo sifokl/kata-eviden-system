@@ -1,0 +1,42 @@
+==========================================================
+EVIDEN AUTH GATEWAY KATA
+STEP 1 - Obtain JWT Access Tokens
+==========================================================
+
+This file obtains the Access Tokens used by the following
+Gateway tests.
+
+----------------------------------------------------------
+USER TOKEN
+----------------------------------------------------------
+
+curl -X POST "http://localhost:8180/realms/eviden-kata/protocol/openid-connect/token" ^
+  -H "Content-Type: application/x-www-form-urlencoded" ^
+  -d "grant_type=password" ^
+  -d "client_id=gateway-client" ^
+  -d "client_secret=gateway-secret" ^
+  -d "username=user" ^
+  -d "password=user"
+
+Expected:
+- HTTP 200
+- Copy the "access_token"
+- Save it as USER_ACCESS_TOKEN
+
+
+----------------------------------------------------------
+ADMIN TOKEN
+----------------------------------------------------------
+
+curl -X POST "http://localhost:8180/realms/eviden-kata/protocol/openid-connect/token" ^
+  -H "Content-Type: application/x-www-form-urlencoded" ^
+  -d "grant_type=password" ^
+  -d "client_id=gateway-client" ^
+  -d "client_secret=gateway-secret" ^
+  -d "username=admin" ^
+  -d "password=admin"
+
+Expected:
+- HTTP 200
+- Copy the "access_token"
+- Save it as ADMIN_ACCESS_TOKEN

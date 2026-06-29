@@ -1,0 +1,39 @@
+==========================================================
+EVIDEN AUTH GATEWAY KATA
+STEP 2 - Test Fake Books API
+==========================================================
+
+The Fake API does NOT validate JWTs.
+
+Its purpose is only to simulate the protected backend
+resource behind the Authentication Gateway.
+
+
+----------------------------------------------------------
+PUBLIC BOOKS
+----------------------------------------------------------
+
+curl http://localhost:8082/api/library/public/books
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+MEMBERS BOOKS
+----------------------------------------------------------
+
+curl http://localhost:8082/api/library/members/books
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+ADMIN BOOKS
+----------------------------------------------------------
+
+curl http://localhost:8082/api/library/admin/books
+
+Expected:
+HTTP 200

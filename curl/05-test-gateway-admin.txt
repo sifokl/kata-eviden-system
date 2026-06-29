@@ -1,0 +1,47 @@
+==========================================================
+EVIDEN AUTH GATEWAY KATA
+STEP 5 - Gateway ADMIN Scenario
+==========================================================
+
+Replace
+
+<ADMIN_ACCESS_TOKEN>
+
+with the token obtained in
+01-get-tokens.txt
+
+
+----------------------------------------------------------
+Current User
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <ADMIN_ACCESS_TOKEN>" ^
+http://localhost:8081/api/me
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+Members Books
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <ADMIN_ACCESS_TOKEN>" ^
+http://localhost:8081/members/books
+
+Expected:
+HTTP 200
+
+
+----------------------------------------------------------
+Admin Books
+----------------------------------------------------------
+
+curl -H "Authorization: Bearer <ADMIN_ACCESS_TOKEN>" ^
+http://localhost:8081/admin/books
+
+Expected:
+HTTP 200
+
+Reason:
+ADMIN inherits USER permissions and can access all protected resources.

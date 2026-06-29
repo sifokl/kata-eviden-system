@@ -1,0 +1,94 @@
+{
+  "info": {
+    "_postman_id": "8b8a2c0e-2f72-4c2f-a3c8-fake-books-api",
+    "name": "Fake Books API",
+    "description": "Postman collection for testing the fake Books API used as backend resource behind the authentication gateway kata.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Public Books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{books_api_base_url}}/api/library/public/books",
+          "host": [
+            "{{books_api_base_url}}"
+          ],
+          "path": [
+            "api",
+            "library",
+            "public",
+            "books"
+          ]
+        },
+        "description": "Returns public books. No Authorization header is required."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Members Books",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer fake-member-token",
+            "type": "text",
+            "description": "Fake token only used to demonstrate that the backend can receive a propagated Authorization header."
+          }
+        ],
+        "url": {
+          "raw": "{{books_api_base_url}}/api/library/members/books",
+          "host": [
+            "{{books_api_base_url}}"
+          ],
+          "path": [
+            "api",
+            "library",
+            "members",
+            "books"
+          ]
+        },
+        "description": "Returns member books. The fake API does not validate JWTs; it only represents the backend resource behind the gateway."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Admin Books",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer fake-admin-token",
+            "type": "text",
+            "description": "Fake token only used to demonstrate that the backend can receive a propagated Authorization header."
+          }
+        ],
+        "url": {
+          "raw": "{{books_api_base_url}}/api/library/admin/books",
+          "host": [
+            "{{books_api_base_url}}"
+          ],
+          "path": [
+            "api",
+            "library",
+            "admin",
+            "books"
+          ]
+        },
+        "description": "Returns admin books. The fake API does not validate JWTs; authorization is handled by the gateway."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "books_api_base_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    }
+  ]
+}
