@@ -94,10 +94,16 @@ target/
 *.iml
 .DS_Store
 *.zip
-*.bat
+
 .git/
 out/
 .mvn/
 
 *.class
 *.log
+
+# Ignorer tous les fichiers .bat
+*.bat
+
+# Mais garder RUN-ALL-WNDWS.bat
+!RUN-ALL-WNDWS.bat
