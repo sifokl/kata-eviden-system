@@ -1,0 +1,34 @@
+server:
+  port: 0
+
+gateway:
+  backend:
+    base-url: http://localhost:${wiremock.server.port}
+    resource:
+      public-path: /api/library/public/books
+      members-path: /api/library/members/books
+      admin-path: /api/library/admin/books
+
+  security:
+    public-endpoints:
+      - /public/books
+      - /swagger-ui/**
+      - /v3/api-docs/**
+
+    route-authorizations:
+      - pattern: /api/me
+        access: AUTHENTICATED
+
+      - pattern: /members/books
+        access: HAS_ANY_ROLE
+        roles:
+          - USER
+          - ADMIN
+
+      - pattern: /admin/books
+        access: HAS_ROLE
+        roles:
+          - ADMIN
+
+  token:
+    propagation-token-mode: RELAY

@@ -1,0 +1,103 @@
+# ====================================================================
+# MULTI-MODULE JAVA / SPRING BOOT & DOCKER IDENTITY GATEWAY KATA
+# ====================================================================
+
+# --------------------------------------------------------------------
+# Compilateurs et Outils de Build (Maven)
+# --------------------------------------------------------------------
+target/
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# Si jamais tu as utilisé Gradle pour un sous-module par erreur
+.gradle
+**/build/
+
+# --------------------------------------------------------------------
+# Configuration des IDEs (IntelliJ IDEA, Eclipse, VS Code)
+# --------------------------------------------------------------------
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+/out/
+**/out/
+# Exclure les configurations d'exécution locales contenant des secrets
+.idea/runConfigurations/
+.idea/workspace.xml
+
+# Eclipse
+.metadata
+.classpath
+.project
+.settings/
+*.launch
+*.factorypath
+
+# Visual Studio Code
+.vscode/
+
+# --------------------------------------------------------------------
+# Logs et Fichiers Temporaires
+# --------------------------------------------------------------------
+*.log
+**/logs/
+*.gz
+*.tmp
+*.bak
+
+# --------------------------------------------------------------------
+# Docker & Bases de données locales (Keycloak / Data Persistante)
+# --------------------------------------------------------------------
+# Ne JAMAIS commuter les volumes de données locaux de Keycloak ou des DBs
+.docker/data/
+**/docker/data/
+mysql-data/
+postgres-data/
+keycloak-data/
+
+# --------------------------------------------------------------------
+# Sécurité & Environnement (TRÈS IMPORTANT pour Evidian)
+# --------------------------------------------------------------------
+# Fichiers contenant des credentials ou des configurations d'infrastructure
+.env
+*.env
+!*.env.example
+*.jks
+*.p12
+*.pem
+*.crt
+*.key
+
+# --------------------------------------------------------------------
+# Système d'exploitation
+# --------------------------------------------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+target/
+.idea/
+*.iml
+.DS_Store
+*.zip
+*.bat
+.git/
+out/
+.mvn/
+
+*.class
+*.log

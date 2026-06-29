@@ -1,0 +1,19 @@
+gateway:
+  security:
+    public-endpoints:
+      - /public/books
+
+    route-authorizations:
+      - pattern: /api/me
+        access: AUTHENTICATED
+
+      - pattern: /members/books
+        access: HAS_ANY_ROLE
+        roles:
+          - USER
+          - ADMIN
+
+      - pattern: /admin/books
+        access: HAS_ROLE
+        roles:
+          - ADMIN
